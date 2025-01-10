@@ -1,0 +1,28 @@
+name: ciworkflow
+on:
+  push:
+      branches:
+          - main
+jobs:
+    run-shel-comonds:
+      run_on: ubuntu-latest
+      steps:
+        - name: echo a string
+          run: echo "Hello,world"
+        - name: multiline commond
+          run: 
+            node -v
+            nmp -v
+    parallel-jobs-macos: 
+        run-on: macos-latest
+        steps: 
+            - name: View Sw Version
+              run_on: sw_vers
+    depedency-jobs:
+        run_on: windows-latest
+        needs: run-shel-comonds
+        steps:
+            - name: echo a string
+              run: Write-Host "Hello,world"
+            - name: Error Step
+              run: doesnotexit
