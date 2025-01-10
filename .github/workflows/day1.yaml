@@ -1,28 +1,31 @@
 name: ciworkflow
 on:
   push:
-      branches:
-          - main
+    branches:
+      - main
+
 jobs:
-    run-shel-comonds:
-      run_on: ubuntu-latest
-      steps:
-        - name: echo a string
-          run: echo "Hello,world"
-        - name: multiline commond
-          run: 
-            node -v
-            nmp -v
-    parallel-jobs-macos: 
-        run-on: macos-latest
-        steps: 
-            - name: View Sw Version
-              run_on: sw_vers
-    depedency-jobs:
-        run_on: windows-latest
-        needs: run-shel-comonds
-        steps:
-            - name: echo a string
-              run: Write-Host "Hello,world"
-            - name: Error Step
-              run: doesnotexit
+  run-shell-commands:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo a string
+        run: echo "Hello, world"
+      - name: Multiline command
+        run: |
+          node -v
+          npm -v
+
+  parallel-jobs-macos:
+    runs-on: macos-latest
+    steps:
+      - name: View macOS version
+        run: sw_vers
+
+  dependency-jobs:
+    runs-on: windows-latest
+    needs: run-shell-commands
+    steps:
+      - name: Echo a string
+        run: Write-Host "Hello, world"
+      - name: Placeholder for error step
+        run: echo "This step needs a valid command"
