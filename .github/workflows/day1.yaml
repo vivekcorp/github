@@ -28,4 +28,4 @@ jobs:
       - name: Echo a string
         run: Write-Host "Hello, world"
       - name: Placeholder for error step
-        run: echo "This step needs a valid commands"
+        run: echo "This step needs a valid commandss"
