@@ -10,7 +10,7 @@ jobs:
   event-job: 
     runs-on: ubuntu-latest
     steps: 
-    - run: |
-      echo $GITHUB_SHA
-      echo $GITHUB_REF
+    - run: 
+        echo $GITHUB_SHA
+        echo $GITHUB_REF
     - uses: actions/checkout@v2
