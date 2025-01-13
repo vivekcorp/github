@@ -9,6 +9,4 @@ jobs:
     steps:   
     - uses: actions/checkout@v4
       with:
-        sparse-checkout: |
-            README.md
-        sparse-checkout-cone-mode: true
+        fetch-depth: 0
