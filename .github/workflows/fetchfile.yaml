@@ -11,4 +11,4 @@ jobs:
       with:
         sparse-checkout: |
             README.md
-        sparse-checkout-cone-mode: false
+        sparse-checkout-cone-mode: true
