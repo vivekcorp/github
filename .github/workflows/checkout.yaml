@@ -12,7 +12,7 @@ jobs:
     - name: checkout
       run: |
         git config --global init.defaultBranch main
-        git romote add origit "https://$GITHUB_ACTOR:${{secrets.GITHUB_TOKEN}}@github.com/$GITHUB_REPOSITORY.git"
+        git remote add origit "https://$GITHUB_ACTOR:${{secrets.GITHUB_TOKEN}}@github.com/$GITHUB_REPOSITORY.git"
         git fetch origin
         git checkout main
     - name: display current file after
