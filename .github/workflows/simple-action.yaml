@@ -1,15 +1,15 @@
 name: Simple Action
 on:
-    push:
-      branches:
-          - main
+  push:
+    branches:
+    - main
 jobs: 
   simple-action:
     runs-on: ubuntu-latest
     steps:
-      - name: Simple jss action
+      - name: Simple Js Action
         id: greet
-        uses: hello-world-javascript-action@dd51a7dd81990a1e0581828d4e1287f0ce1c2c4e@v1.1
+        uses: actions/ello-world-javascript-action@v1.1
         with:
           who-to-greet: vivek
       - name: Log Greeting time
