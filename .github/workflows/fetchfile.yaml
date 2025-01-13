@@ -1,0 +1,14 @@
+name: fetchfile
+on:
+  push:
+    branches:
+      - main
+jobs: 
+   fetch-file: 
+    runs-on: ubuntu-latest
+    steps:   
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |
+            README.md
+        sparse-checkout-cone-mode: false
