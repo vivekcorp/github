@@ -6,8 +6,8 @@ jobs:
     steps:
       - name: Simple jss action
         id: greet
-        uses: hello-world-javascript-action@v1.1
+        uses: hello-world-javascript-action@dd51a7dd81990a1e0581828d4e1287f0ce1c2c4e
         with:
-            who-to-greet: vivek
+          who-to-greet: vivek
       - name: Log Greeting time
-        run: echo "${{steps.greet.outputs.greeting}}"
+        run: echo "${{steps.greet.outputs.time}}"
