@@ -1,0 +1,19 @@
+name: checkout job
+on:
+  push:
+    branches:
+        - main
+jobs:
+ checkout-jobs-good:
+    runs-on: ubuntu-latest
+    steps: 
+    - name: display the current file before
+      run: ls -a 
+    - name: checkout to code
+      run: |
+        git init
+        git romote add origit "https://$GITHUB_ACTOR:${{secrets.GITHUB_TOKEN}}@github.com/$GITHUB_REPOSITORY.git"
+        git fetch origin
+        git checkout main
+    - name: display current file after
+      run : ls -a      
