@@ -9,6 +9,6 @@ jobs:
     steps:
       - name:  display current file name
         run: ls -lrt
-      - uses: checkout@v3
+      - uses: actions/checkout@v3
       - name: checkout after
         run: ls -lrt
