@@ -1,0 +1,15 @@
+name: repository event
+on: 
+  push:
+  pull_request: 
+      types: [opened, synchronize, reopened, closed]
+  issues: 
+    types: [opened, closed]
+jobs: 
+  checkout-test: 
+    runs-on: ubuntu-latest
+    steps: 
+    - run: 
+          echo $GITHUB_SHA
+          echo $GITHUB_REF
+    - uses: actions/checkout@v2     
