@@ -12,3 +12,5 @@ jobs:
       - name: Use that secret output (protected by a mask)
         run: |
           echo "The secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
+      - name: Create annotation for build error
+        run: echo "::error file=app.js,line=1::Missing semicolon"
