@@ -1,0 +1,32 @@
+name: Export Environment Variable Example
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on push to the main branch
+
+jobs:
+  example-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Set an environment variable
+      - name: Export an environment variable
+        run: |
+          echo "::notice::Setting up the environment variable"
+          echo "MY_VARIABLE=Hello, World!" >> $GITHUB_ENV
+
+      # Step 2: Use the exported environment variable
+      - name: Use the exported environment variable
+        run: |
+          echo "The value of MY_VARIABLE is $MY_VARIABLE"
+
+      # Step 3: Use it in a script
+      - name: Use in a script
+        run: |
+          if [[ "$MY_VARIABLE" == "Hello, World!" ]]; then
+            echo "The environment variable is set correctly."
+          else
+            echo "The environment variable is missing or incorrect."
+            exit 1
+          fi
