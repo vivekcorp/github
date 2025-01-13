@@ -1,5 +1,8 @@
 name: simple-action
-on: [push]
+on:
+    push:
+      branches:
+          - main
 jobs: 
   simple-job-action:
     runs-on: ubuntu-latest
