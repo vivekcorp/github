@@ -9,7 +9,7 @@ jobs:
     steps: 
     - name: display the current file before
       run: ls -a 
-    - name: checkout to code
+    - name: checkout
       run: |
         git init
         git romote add origit "https://$GITHUB_ACTOR:${{secrets.GITHUB_TOKEN}}@github.com/$GITHUB_REPOSITORY.git"
