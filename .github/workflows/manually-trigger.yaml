@@ -24,5 +24,5 @@ jobs:
         runs-on: ubuntu-latest
         steps: 
         - run: ls -a
-        - run: "location is ${{ github.event.inputs.location }}"
+        - run: "location is ${{ inputs.location }}"
     
