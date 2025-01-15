@@ -1,6 +1,17 @@
 name: Repository Event
 on: 
-  push:
+  push: 
+    branches: 
+      - main
+      - "!vivek/*"
+
+    # branches-ignore: 
+    #   - develop
+    tags:
+      - v1
+      - "!v2"
+    paths: 
+      - "**.js"
   pull_request: 
       types: [opened, synchronize, reopened, closed]
   issues: 
