@@ -20,9 +20,10 @@ on:
             - 'nala-sopara'
     
 jobs: 
-    echo-strings:
+    Dada-Bhai:
         runs-on: ubuntu-latest
         steps: 
         - run: ls -a
-        - run: "location is ${{ inputs.location }}"
+        - run: 
+            echo "location is ${{ inputs.location }}"
     
