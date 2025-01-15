@@ -26,4 +26,5 @@ jobs:
         - run: ls -a
         - run: 
             echo "location is ${{ inputs.location }}"
+            echo "name is ${{ inputs.name }}"
     
