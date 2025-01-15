@@ -6,6 +6,10 @@ on:
         description: 'This workflow triggers a manual event'
         required: true
         default: 'default value'
+        type: choice
+        options:
+            - 'jumping'
+            - 'running'
       location: 
         description: 'This is default location'
         required: true
