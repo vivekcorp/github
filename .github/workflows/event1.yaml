@@ -4,7 +4,7 @@ on:
   pull_request: 
       types: [opened, synchronize, reopened, closed]
   issues: 
-    types: [opened, closed]
+    types: [opened]
 jobs: 
   checkout-test: 
     runs-on: ubuntu-latest
