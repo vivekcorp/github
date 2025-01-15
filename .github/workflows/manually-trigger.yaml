@@ -1,9 +1,24 @@
 name: manually-trigger
 on: 
   workflow_dispatch: 
+    inputs: 
+      name: 
+        description: 'This workflow triggers a manual event'
+        required: true
+        default: 'default value'
+      location: 
+        description: 'This is default location'
+        required: true
+        default: 'mumbai'
+        type: choice
+        options:
+            - 'Mulund'
+            - 'nala-sopara'
+    
 jobs: 
     echo-strings:
         runs-on: ubuntu-latest
         steps: 
         - run: ls -a
+        - run: "location is ${{ github.event.inputs.location }}"
     
