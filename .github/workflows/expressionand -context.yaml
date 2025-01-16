@@ -1,5 +1,5 @@
 name: Expression and Context
-on: [pull_request, push, issue,workflow_dispatch]
+on: [pull_request, push, workflow_dispatch , issues]
 jobs:
   using-expression-and-contexts:
     runs-on: ubuntu-latest
