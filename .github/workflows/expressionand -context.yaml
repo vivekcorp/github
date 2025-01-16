@@ -1,5 +1,5 @@
 name: Expression and Context
-on: [pull_request, push, workflow_dispatch , issues]
+on: [pull_request, push, workflow_dispatch, issues]
 jobs:
   using-expression-and-contexts:
     runs-on: ubuntu-latest
@@ -7,16 +7,15 @@ jobs:
       - name: Expressions
         id: expressions
         run: |
-          echo ${{ 1 }}
-          echo ${{'This is string'}}
-          echo ${{true}}
-          echo ${{null}}
-          echo ${{'string' == 'String'}}
-      - name: Dumpcontexts
+          echo "Integer: ${{ 1 }}"
+          echo "String: ${{ 'This is string' }}"
+          echo "Boolean: ${{ true }}"
+          echo "Null: ${{ null }}"
+          echo "String comparison: ${{ 'string' == 'String' }}"
+
+      - name: Dump contexts
         run: |
-         echo ${{ toJson(github) }}
-         echo ${{ toJson(job) }}
-         echo ${{ toJson(steps) }}
-         echo ${{ toJson(secrets) }}
-         echo ${{ toJson(runner)}} 
-            
+          echo "GitHub Context: ${{ toJson(github) }}"
+          echo "Job Context: ${{ toJson(job) }}"
+          echo "Runner Context: ${{ toJson(runner) }}"
+          echo "Secrets Context: ${{ toJson(secrets) }}"
