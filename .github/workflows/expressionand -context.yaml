@@ -12,10 +12,11 @@ jobs:
           echo ${{true}}
           echo ${{null}}
           echo ${{'string' == 'String'}}
-      - name: Dump contexts
+      - name: Dumpcontexts
         run: |
-          echo ${{ toJson(github) }}
-          echo ${{ toJson(job) }}
-          echo ${{ toJson(steps) }}
-          echo ${{ toJson(secrets) }}
-          echo ${{ toJson(runner)}} 
+         echo ${{ toJson(github) }}
+         echo ${{ toJson(job) }}
+         echo ${{ toJson(steps) }}
+         echo ${{ toJson(secrets) }}
+         echo ${{ toJson(runner)}} 
+            
