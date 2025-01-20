@@ -12,6 +12,8 @@ jobs:
           echo "Boolean: ${{ true }}"
           echo "Null: ${{ null }}"
           echo "String comparison: ${{ 'string' == 'String' }}"
+          echo "string comparions: ${{ true || true && false}}
+          echo "string comparions: ${{ true || false && true}}
 
       - name: Dump contexts
         run: |
@@ -19,3 +21,4 @@ jobs:
           echo "Job Context: ${{ toJson(job) }}"
           echo "Runner Context: ${{ toJson(runner) }}"
           echo "Secrets Context: ${{ toJson(secrets) }}"
+          echo "matrix "
