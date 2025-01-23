@@ -1,0 +1,10 @@
+name: environment
+on: [ workflow_dispatch ]
+jobs: 
+  env-var-and-context:
+    runs-on: ubuntu-latest
+    steps: 
+        - name: Log ENV VAR
+          run: echo $GITHUB_REF
+        - name: Log ENV VAR
+          run: echo '${{ github.ref}}'
