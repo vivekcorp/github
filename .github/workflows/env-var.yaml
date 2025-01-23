@@ -2,14 +2,14 @@ name: environment
 on: [ push]
 
 env:
-  WF_LEVEL_ENV:'Available to all jobs'
+  WF_LEVEL_ENV: 'Available to all jobs'
 jobs: 
   env-var-and-context:
     runs-on: ubuntu-latest
     # if: ${{github.ref == 'refs/heads/main'}}
     if: github.ref == 'refs/heads/main'
     env:
-      JOB_LEVEL_ENV:'Available to all steps in env-var-and-context job'
+      JOB_LEVEL_ENV: 'Available to all steps in env-var-and-context job'
     steps: 
         - name: Log environment
           run: echo $GITHUB_REF
