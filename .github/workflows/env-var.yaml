@@ -9,7 +9,7 @@ jobs:
     # if: ${{github.ref == 'refs/heads/main'}}
     if: github.ref == 'refs/heads/main'
     env:
-      WF_LEVEL_ENV:'Available to all stepsin env-var-and-context job'
+      JOB_LEVEL_ENV:'Available to all stepsin env-var-and-context job'
     steps: 
         - name: Log environment
           run: echo $GITHUB_REF
@@ -19,7 +19,8 @@ jobs:
           env:
             STEP_LEVEL_ENV:'Available to only this step'
             WF_LEVEL_ENV:'Override in step level'
-          run: 
+          run: |
            echo ${{ env.STEP_LEVEL_ENV}}
            echo $STEP_LEVEL_ENV
            echo $WF_LEVEL_ENV
+           echo $JOB_LEVEL_ENV
