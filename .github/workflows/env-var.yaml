@@ -4,7 +4,7 @@ jobs:
   env-var-and-context:
     runs-on: ubuntu-latest
     steps: 
-        - name: Log ENV VAR
+        - name: Log environment
           run: echo $GITHUB_REF
-        - name: Log ENV VAR
+        - name: Log context
           run: echo '${{ github.ref}}'
