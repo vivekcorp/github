@@ -6,11 +6,12 @@ jobs:
         steps:
             - name: step1
               run: sleep 20
-            - name: Fail
+            - name: steps2
+              id: steps2
               run: exit 1
             - name: Runs on Failure
-              if: failure()
-              run: echo "Runs on Failure"
+              if: steps.steps2.conclusion == 'failure'
+              run: echo "RStep2 failed"
             - name: Runs on Success
               if: success()
               run: echo "Runs on Success"
