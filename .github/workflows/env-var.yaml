@@ -19,7 +19,7 @@ jobs:
           env:
             STEP_LEVEL_ENV:'Available to only this step'
             WF_LEVEL_ENV:'Override in step level'
-        run: 
-          echo ${{ env.STEP_LEVEL_ENV}}
-          echo $STEP_LEVEL_ENV
-          echo $WF_LEVEL_ENV
+          run: 
+           echo ${{ env.STEP_LEVEL_ENV}}
+           echo $STEP_LEVEL_ENV
+           echo $WF_LEVEL_ENV
