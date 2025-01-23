@@ -15,12 +15,18 @@ jobs:
           run: echo $GITHUB_REF
         - name: Log context
           run: echo '${{ github.ref}}'
+        - name: set new variable
+          run:
+            echo '$New_env= $(date)' >> $GITHUB_ENV
+            echo 'JOB_LEVEL_ENV= $RANDOM' >>$GITHUB_ENV
         - name: log Custum vars
           env:
             STEP_LEVEL_ENV: Available to only this step
             WF_LEVEL_ENV: Override in step level
+        
           run: |
            echo ${{ env.STEP_LEVEL_ENV}}
            echo $STEP_LEVEL_ENV
            echo $WF_LEVEL_ENV
            echo $JOB_LEVEL_ENV
+           echo $New_env
