@@ -16,10 +16,10 @@ jobs:
                     - os: ubuntu-latest
                       node-version: 16
                       experimental: true
-                    - os: ubuntu-latest
+                    - os: macos-latest
                       node-version: 17
                 exclude: 
-                    - os: wubntu-latest
+                    - os: ubuntu-latest
                       node-version: 14
             fail-fast: false
             #max-parallel: 3
