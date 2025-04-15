@@ -34,15 +34,15 @@ jobs:
         id: set_tfvar
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
-            echo "value=./infra/prod.tfvars" >> $GITHUB_OUTPUT
+            echo "file_path=./infra/prod.tfvars" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event.inputs.environment }}" == "stage" ]]; then
-            echo "value=../environment/tfvars/stage.tfvars" >> $GITHUB_OUTPUT
+            echo "file_path=../environment/tfvars/stage.tfvars" >> $GITHUB_OUTPUT
           else
-            echo "value=../environment/tfvars/dev.tfvars" >> $GITHUB_OUTPUT
+            echo "file_path=../environment/tfvars/dev.tfvars" >> $GITHUB_OUTPUT
           fi
 
       - name: Print Selected TF_VAR_file_path
-        run: echo "TF_VAR_file_path: ${{ steps.set_tfvar.outputs.value }}"
+        run: echo "TF_VAR_file_path: ${{ steps.set_tfvar.outputs.file_path }}"
 
       - name: Set Azure Credentials Based on Environment
         run: |
@@ -95,8 +95,7 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          echo "Running terraform plan..."
-          terraform plan -var-file="${{ steps.set_tfvar.outputs.value }}" -out=plandir/plan_output.tfplan
+          terraform plan -var-file="${{ steps.set_tfvar.outputs.file_path }}" -out=plandir/plan_output.tfplan
         working-directory: infra
 
       - name: List Files in plandir After Plan
