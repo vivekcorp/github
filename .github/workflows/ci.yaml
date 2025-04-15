@@ -34,7 +34,7 @@ jobs:
         id: set_tfvar
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
-            echo "file_path=./infra/prod.tfvars" >> $GITHUB_OUTPUT
+            echo "file_path=../infra/prod.tfvars" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event.inputs.environment }}" == "stage" ]]; then
             echo "file_path=../environment/tfvars/stage.tfvars" >> $GITHUB_OUTPUT
           else
