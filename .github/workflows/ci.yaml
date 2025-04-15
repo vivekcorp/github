@@ -24,12 +24,15 @@ jobs:
       TF_VAR_environment: ${{ github.event.inputs.environment }}
 
     steps:
+      # Checkout repository to access code and configuration files
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Show directory structure for debugging purposes
       - name: Show Project Structure
         run: ls -R
 
+      # Set environment-specific tfvars file path
       - name: Set TF_VAR_file_path Based on Environment
         id: set_tfvar
         run: |
@@ -40,6 +43,8 @@ jobs:
           else
             echo "file_path=dev.tfvars" >> $GITHUB_OUTPUT
           fi
+
+      # Set Azure credentials based on environment
       - name: Set Azure Credentials Based on Environment
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
@@ -58,15 +63,26 @@ jobs:
             echo "ARM_SUBSCRIPTION_ID=${{ secrets.DEV_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
             echo "ARM_TENANT_ID=${{ secrets.DEV_ARM_TENANT_ID }}" >> $GITHUB_ENV
           fi
+
+      # Install Terraform
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.5.7
+
+      # Authenticate to Azure using Azure Login action
       - name: Authenticate to Azure
         uses: azure/login@v1
         with:
-          creds: '{"clientId":"${{ secrets.ARM_CLIENT_ID }}","tenantId":"${{ secrets.ARM_TENANT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ secrets.ARM_SUBSCRIPTION_ID }}"}'
+          creds: >
+            {
+              "clientId": "${{ secrets.ARM_CLIENT_ID }}",
+              "tenantId": "${{ secrets.ARM_TENANT_ID }}",
+              "clientSecret": "${{ secrets.ARM_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+            }
 
+      # Initialize Terraform
       - name: Terraform Init
         run: |
           terraform init -reconfigure \
@@ -76,31 +92,38 @@ jobs:
             -backend-config="key=${{ github.event.inputs.environment }}.tfstate"
         working-directory: infra
 
-      # - name: Terraform Format Check
-      #   run: terraform fmt -check -recursive
-      #   working-directory: infra
+      # Terraform Format Check
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+        working-directory: infra
 
-      # - name: Terraform Validate
-      #   run: terraform validate
-      #   working-directory: infra
+      # Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: infra
 
+      # Create plandir directory for storing plan files
       - name: Ensure plandir Directory Exists
         run: mkdir -p plandir
         working-directory: infra
 
+      # List files in plandir directory before Terraform Plan
       - name: List Files in plandir Before Plan
         run: ls -R plandir || echo "plandir does not exist"
         working-directory: infra
 
+      # Run Terraform Plan
       - name: Terraform Plan
         run: |
           terraform plan -var-file="${{ steps.set_tfvar.outputs.file_path }}" -out=plandir/plan_output.tfplan
         working-directory: infra
 
+      # List files in plandir directory after Terraform Plan
       - name: List Files in plandir After Plan
         run: ls -R plandir || echo "plandir does not exist"
         working-directory: infra
 
+      # Upload Terraform Plan as an artifact
       - name: Upload Terraform Plan as Artifact
         uses: actions/upload-artifact@v4
         with:
