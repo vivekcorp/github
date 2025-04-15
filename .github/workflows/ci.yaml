@@ -65,7 +65,7 @@ jobs:
       - name: Authenticate to Azure
         uses: azure/login@v1
         with:
-          creds: '{"clientId":"${{ secrets.PROD_ARM_CLIENT_ID }}","tenantId":"${{ secrets.PROD_ARM_TENANT_ID }}","clientSecret":"${{ secrets.PROD_ARM_CLIENT_SECRET }}","subscriptionId":"${{ secrets.PROD_ARM_SUBSCRIPTION_ID }}"}'
+          creds: '{"clientId":"${{ secrets.ARM_CLIENT_ID }}","tenantId":"${{ secrets.ARM_TENANT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ secrets.ARM_SUBSCRIPTION_ID }}"}'
 
       - name: Terraform Init
         run: |
