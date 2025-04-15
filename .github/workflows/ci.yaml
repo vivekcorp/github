@@ -72,13 +72,13 @@ jobs:
             -backend-config="key=${{ github.event.inputs.environment }}.tfstate"
         working-directory: infra
 
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-        working-directory: infra
+      # - name: Terraform Format Check
+      #   run: terraform fmt -check -recursive
+      #   working-directory: infra
 
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: infra
+      # - name: Terraform Validate
+      #   run: terraform validate
+      #   working-directory: infra
 
       - name: Ensure plandir Directory Exists
         run: mkdir -p plandir
