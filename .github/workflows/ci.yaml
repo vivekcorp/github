@@ -41,9 +41,6 @@ jobs:
             echo "file_path=../environment/tfvars/dev.tfvars" >> $GITHUB_OUTPUT
           fi
 
-      - name: Print Selected TF_VAR_file_path
-        run: echo "TF_VAR_file_path: ${{ steps.set_tfvar.outputs.file_path }}"
-
       - name: Set Azure Credentials Based on Environment
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
