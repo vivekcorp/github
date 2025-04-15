@@ -27,10 +27,7 @@ variable "vmsetup" {
   type = map(any)
 
 }
-variable "vmss" {
-  type = map(any)
 
-}
 variable "VMVnet" {
   type = map(any)
 }
