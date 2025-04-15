@@ -1,0 +1,128 @@
+name: Terraform CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - stage
+          - prod
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      TF_VAR_environment: ${{ github.event.inputs.environment }}
+      TF_VAR_file_path: ''
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: List Files in infra Directory
+        run: |
+          echo "Listing files in the infra directory"
+          ls -R ./infra
+
+      - name: Set TF_VAR_file_path Based on Environment
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
+            echo "TF_VAR_file_path=./infra/prod.tfvars" >> $GITHUB_ENV
+          elif [[ "${{ github.event.inputs.environment }}" == "stage" ]]; then
+            echo "TF_VAR_file_path=../environment/tfvars/stage.tfvars" >> $GITHUB_ENV
+          else
+            echo "TF_VAR_file_path=../environment/tfvars/dev.tfvars" >> $GITHUB_ENV
+          fi
+
+      - name: Print TF_VAR_file_path
+        run: |
+          echo "TF_VAR_file_path: ${{ env.TF_VAR_file_path }}"
+
+      - name: Set Azure Credentials Based on Environment
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
+            echo "ARM_CLIENT_ID=${{ secrets.PROD_ARM_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "ARM_CLIENT_SECRET=${{ secrets.PROD_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+            echo "ARM_SUBSCRIPTION_ID=${{ secrets.PROD_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+            echo "ARM_TENANT_ID=${{ secrets.PROD_ARM_TENANT_ID }}" >> $GITHUB_ENV
+          elif [[ "${{ github.event.inputs.environment }}" == "stage" ]]; then
+            echo "ARM_CLIENT_ID=${{ secrets.STAGE_ARM_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "ARM_CLIENT_SECRET=${{ secrets.STAGE_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+            echo "ARM_SUBSCRIPTION_ID=${{ secrets.STAGE_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+            echo "ARM_TENANT_ID=${{ secrets.STAGE_ARM_TENANT_ID }}" >> $GITHUB_ENV
+          else
+            echo "ARM_CLIENT_ID=${{ secrets.DEV_ARM_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "ARM_CLIENT_SECRET=${{ secrets.DEV_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+            echo "ARM_SUBSCRIPTION_ID=${{ secrets.DEV_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+            echo "ARM_TENANT_ID=${{ secrets.DEV_ARM_TENANT_ID }}" >> $GITHUB_ENV
+          fi
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+
+      - name: Terraform Init
+        run: |
+          terraform init -reconfigure \
+            -backend-config="resource_group_name=transinfra" \
+            -backend-config="storage_account_name=infrastoragetfstate1" \
+            -backend-config="container_name=infra-tfstate" \
+            -backend-config="key=${{ github.event.inputs.environment }}.tfstate"
+        working-directory: Infra
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: infra
+
+      - name: Ensure plandir Directory Exists
+        run: |
+          echo "Ensuring plandir directory exists"
+          mkdir -p infra/plandir
+        working-directory: infra
+
+      - name: List Files in plandir Directory Before Terraform Plan
+        run: |
+          echo "Listing files in plandir directory before terraform plan"
+          ls -R Infra/plandir || echo "plandir directory does not exist"
+        working-directory: infra
+
+      - name: Terraform Plan
+        run: |
+          echo "Running terraform plan"
+          terraform plan -var-file="${{ env.TF_VAR_file_path }}" -out=infra/plandir/plan_output.tfplan
+          echo "Terraform plan output saved as infra/plandir/plan_output.tfplan"
+        working-directory: Infra
+
+      - name: List Files in plandir Directory After Terraform Plan
+        run: |
+          echo "Listing files in plandir directory after terraform plan"
+          ls -R infra/plandir || echo "plandir directory does not exist"
+        working-directory: infra
+
+      - name: Save Terraform Plan Output
+        run: |
+          if [ -f infra/plandir/plan_output.tfplan ]; then
+            echo "Found plan_output.tfplan, moving to GitHub workspace"
+            mv infra/plandir/plan_output.tfplan ${{ github.workspace }}/plan_output.tfplan
+          else
+            echo "Error: plan_output.tfplan not found"
+            exit 1
+          fi
+        working-directory: infra
+
+      # Upload plan as artifact
+      - name: Upload Terraform Plan as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: plan_output.tfplan
