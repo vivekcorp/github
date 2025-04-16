@@ -16,7 +16,7 @@ env:
   WORKING_DIR: ${{ github.event.inputs.environment == 'dev' && './DevopsRG-Terraform/Dev/DevOpsRGCreation' || './infra' }}
   AZURE_CLIENT_ID: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_ID || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_CLIENT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_SUBSCRIPTION_ID || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_SUBSCRIPTION_ID }}
-  AZURE_CLIENT_SECRET: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_SECRET || github.event.inputs.environment == 'prod' && secrets.PROD_ARM_CLIENT_SECRET }}
+  AZURE_CLIENT_SECRET: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_SECRET || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_CLIENT_SECRET }}
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
 jobs:
@@ -32,9 +32,6 @@ jobs:
       - name: Echo Working Directory
         run: echo $WORKING_DIR
 
-      - name: Github Repo
-        run: git config --global url."https://oauth2:${GH_TOKEN}@github.com".insteadOf https://github.com
-
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -43,14 +40,23 @@ jobs:
       - name: Azure CLI Login
         uses: azure/login@v1
         with:
-          creds: '{"clientId":"${{ env.AZURE_CLIENT_ID }}","tenantId":"${{ env.AZURE_TENANT_ID }}","clientSecret":"${{ env.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ env.AZURE_SUBSCRIPTION_ID }}"}'
+          creds: >
+            {
+              "clientId": "${{ env.AZURE_CLIENT_ID }}",
+              "tenantId": "${{ env.AZURE_TENANT_ID }}",
+              "clientSecret": "${{ env.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ env.AZURE_SUBSCRIPTION_ID }}"
+            }
 
       - name: Initialize Terraform
-        run: terraform init
+        run: terraform init -backend-config="resource_group_name=transinfra" \
+                            -backend-config="storage_account_name=infrastoragetfstate1" \
+                            -backend-config="container_name=infra-tfstate" \
+                            -backend-config="key=${{ github.event.inputs.environment }}.tfstate"
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Plan Terraform
-        run: terraform plan -out=tfplan -var-file=prod.tfvars
+        run: terraform plan -out=tfplan -var-file=${{ github.event.inputs.environment }}.tfvars
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Apply Terraform
