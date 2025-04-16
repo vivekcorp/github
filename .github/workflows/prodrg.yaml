@@ -6,22 +6,16 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        default: 'Dev'
+        default: 'dev'
         type: choice
         options:
           - dev
           - prod
 
-env:
-  WORKING_DIR: ${{ github.event.inputs.environment == 'dev' && './DevopsRG-Terraform/Dev/DevOpsRGCreation' || './infra' }}
-  AZURE_CLIENT_ID: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_ID || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_CLIENT_ID }}
-  AZURE_SUBSCRIPTION_ID: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_SUBSCRIPTION_ID || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_SUBSCRIPTION_ID }}
-  AZURE_CLIENT_SECRET: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_SECRET || github.event.inputs.environment == 'prod' && secrets.PROD_ARM_CLIENT_SECRET }}
-  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -29,8 +23,28 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      # Dynamically set environment variables based on input
+      - name: Set environment variables for Dev
+        if: ${{ github.event.inputs.environment == 'dev' }}
+        run: |
+          echo "AZURE_CLIENT_ID=${{ secrets.NONPROD_AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "AZURE_SUBSCRIPTION_ID=${{ secrets.NONPROD_AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "AZURE_CLIENT_SECRET=${{ secrets.NONPROD_AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "WORKING_DIR=./DevopsRG-Terraform/Dev/DevOpsRGCreation" >> $GITHUB_ENV
+
+      - name: Set environment variables for Prod
+        if: ${{ github.event.inputs.environment == 'prod' }}
+        run: |
+          echo "AZURE_CLIENT_ID=${{ secrets.PROD_AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "AZURE_SUBSCRIPTION_ID=${{ secrets.PROD_AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "AZURE_CLIENT_SECRET=${{ secrets.PROD_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "WORKING_DIR=./infra" >> $GITHUB_ENV
+
+      - name: Set shared tenant ID
+        run: echo "AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+
       - name: Echo Working Directory
-        run: echo $WORKING_DIR
+        run: echo "Working dir is $WORKING_DIR"
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
@@ -50,10 +64,19 @@ jobs:
 
       - name: Initialize Terraform
         run: |
-                    terraform init -backend-config="resource_group_name=transinfra" \
-                            -backend-config="storage_account_name=infrastoragetfstate1" \
-                            -backend-config="container_name=infra-tfstate" \
-                            -backend-config="key=${{ github.event.inputs.environment }}.tfstate"
+          terraform init -backend-config="resource_group_name=transinfra" \
+            -backend-config="storage_account_name=infrastoragetfstate1" \
+            -backend-config="container_name=infra-tfstate" \
+            -backend-config="key=${{ github.event.inputs.environment }}.tfstate"
+        env:
+          ARM_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Validate Terraform
+        run: terraform validate
         env:
           ARM_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
@@ -63,8 +86,18 @@ jobs:
 
       - name: Plan Terraform
         run: terraform plan -out=tfplan -var-file=${{ github.event.inputs.environment }}.tfvars
+        env:
+          ARM_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Apply Terraform
         run: terraform apply -auto-approve tfplan
+        env:
+          ARM_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
         working-directory: ${{ env.WORKING_DIR }}
