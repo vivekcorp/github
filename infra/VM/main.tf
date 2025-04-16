@@ -14,43 +14,12 @@ resource "azurerm_managed_disk" "datadisk" {
   for_each              = var.vmsetup
   name                  = data.azurerm_managed_disk.existing_datadisk[each.key].name
   resource_group_name   = data.azurerm_managed_disk.existing_datadisk[each.key].resource_group_name
-  location              = # ─────────────────────────────────────────────
-# Load Existing Managed Disks
-# ─────────────────────────────────────────────
-data "azurerm_managed_disk" "existing_datadisk" {
-  for_each            = var.vmsetup
-  name                = "${each.value.virtual_machine_name}-datadisk"
-  resource_group_name = each.value.resource_group_name
-}
-
-# ─────────────────────────────────────────────
-# Manage the Existing Disk - Only to Update Network Access
-# ─────────────────────────────────────────────
-resource "azurerm_managed_disk" "datadisk" {
-  for_each              = var.vmsetup
-  name                  = data.azurerm_managed_disk.existing_datadisk[each.key].name
-  resource_group_name   = data.azurerm_managed_disk.existing_datadisk[each.key].resource_group_name
-  location              = each.value.location
-  storage_account_type  = data.azurerm_managed_disk.existing_datadisk[each.key].sku
+  location              = each.value.location  # Use location from the input variable
+  storage_account_type  = data.azurerm_managed_disk.existing_datadisk[each.key].sku  # Correct attribute for storage type
   create_option         = "Empty"
   disk_size_gb          = data.azurerm_managed_disk.existing_datadisk[each.key].disk_size_gb
 
-  network_access_policy = "DenyAll"
-
-  lifecycle {
-    ignore_changes = [
-      disk_size_gb,
-      storage_account_type,
-      create_option,
-    ]
-  }
-}
-
-  storage_account_type  = data.azurerm_managed_disk.existing_datadisk[each.key].storage_account_type
-  create_option         = "Empty"
-  disk_size_gb          = data.azurerm_managed_disk.existing_datadisk[each.key].disk_size_gb
-
-  # 👇 Update this field only
+  # Update the network access policy
   network_access_policy = "DenyAll"
 
   lifecycle {
