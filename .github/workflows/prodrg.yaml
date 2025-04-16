@@ -53,11 +53,6 @@ jobs:
         run: terraform plan -out=tfplan -var-file=prod.tfvars
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: List Files After Plan
-        run: ls -1 $GITHUB_WORKSPACE/${{ env.WORKING_DIR }}
-
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ env.WORKING_DIR }}/tfplan
+      - name: Apply Terraform
+        run: terraform apply -auto-approve tfplan
+        working-directory: ${{ env.WORKING_DIR }}
