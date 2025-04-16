@@ -27,7 +27,7 @@ sku                 = "Standard"
 }
 vivekRG = {
   vk = {
-    name     = "tumtumrg1"
+    name     = "tumtumrg"
     location = "westus"
   }
 
