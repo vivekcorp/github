@@ -42,7 +42,7 @@ module "Publicip" {
 }
 module "Subnet" {
   for_each = var.subnetv
-  depends_on = [ module.VMVnet]
+  depends_on = [ module.Vnet]
   source   = "./Subnet"
   subnetv = var.subnetv
   
