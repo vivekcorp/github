@@ -49,10 +49,7 @@ jobs:
             }
 
       - name: Initialize Terraform
-        run: terraform init -backend-config="resource_group_name=transinfra" \
-                            -backend-config="storage_account_name=infrastoragetfstate1" \
-                            -backend-config="container_name=infra-tfstate" \
-                            -backend-config="key=${{ github.event.inputs.environment }}.tfstate"
+        run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Plan Terraform
