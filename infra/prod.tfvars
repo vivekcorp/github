@@ -59,6 +59,7 @@ vmsetup ={
     virtual_machine_name="vivekvm135" 
     location ="westus"
     resource_group_name="tumtumrg"
+    resource_group_namekv="transinfra"
     network_interface_name="nicvik1"
     keyval_name ="vivekkeyvaultinfra"
     keypassname         = "vivekkeyvaultinfrapass"
