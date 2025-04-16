@@ -6,4 +6,5 @@ module "resource_group_name" {
 module "nic" {
   for_each = var.networkin
   source   = "./nic"
+  networkin =var.networkin
 }
