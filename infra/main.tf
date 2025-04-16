@@ -34,7 +34,7 @@ module "vmsetup" {
    
 }
 module "publicip" {
-  for_each = var.publicip
+  for_each = var.Publicip
   depends_on = [ module.resource_group_name ]
   source   = "./publicip"
   publicip = var.publicip
