@@ -1,13 +1,13 @@
 data "azurerm_key_vault_secret" "keyvaultuser" {
   for_each = var.vmsetup
-   name         = "username"
+   name         = "vivekkeyvaultinfrauser"
   key_vault_id = data.azurerm_key_vault.keyvault[each.key].id
 
 }
 
 data "azurerm_key_vault_secret" "keyvaultpass" {
   for_each = var.vmsetup
-  name         = "passwordadmin"
+  name         = "vivekkeyvaultinfrapass"
   key_vault_id = data.azurerm_key_vault.keyvault[each.key].id
 
 }
