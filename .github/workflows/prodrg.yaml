@@ -50,7 +50,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Plan Terraform
-        run: terraform plan -out=tfplan -var-file=devops.tfvars
+        run: terraform plan -out=tfplan -var-file=prod.tfvars
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: List Files After Plan
