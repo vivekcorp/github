@@ -6,7 +6,7 @@ module "resource_group_name" {
 }
 module "nic" {
   for_each = var.networkin
-  depends_on = [ module.Vnet ]
+  depends_on = [ module.Subnet]
   source   = "./nic"
     networkin = var.networkin
 
