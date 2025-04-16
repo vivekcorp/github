@@ -60,9 +60,9 @@ vmsetup ={
     location ="westus"
     resource_group_name="tumtumrg"
     network_interface_name="nicvik1"
-    keyval_name ="vivekkey235"
-    keypassname         = "passwordadmin"
-    keypassuser     = "username"
+    keyval_name ="vivekkeyvaultinfra"
+    keypassname         = "vivekkeyvaultinfrapass"
+    keypassuser     = "vivekkeyvaultinfrauser"
    
        }
 }
