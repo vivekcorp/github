@@ -1,11 +1,15 @@
-# Fetch existing managed disk
+# ─────────────────────────────────────────────
+# Load Existing Managed Disks
+# ─────────────────────────────────────────────
 data "azurerm_managed_disk" "existing_datadisk" {
   for_each            = var.vmsetup
   name                = "${each.value.virtual_machine_name}-datadisk"
   resource_group_name = each.value.resource_group_name
 }
 
-# Manage existing disk to update network access policy only
+# ─────────────────────────────────────────────
+# Manage the Existing Disk - Only to Update Network Access
+# ─────────────────────────────────────────────
 resource "azurerm_managed_disk" "datadisk" {
   for_each              = var.vmsetup
   name                  = data.azurerm_managed_disk.existing_datadisk[each.key].name
@@ -15,7 +19,7 @@ resource "azurerm_managed_disk" "datadisk" {
   create_option         = "Empty"
   disk_size_gb          = data.azurerm_managed_disk.existing_datadisk[each.key].disk_size_gb
 
-  # 👇 Restrict public access here
+  # 👇 Update this field only
   network_access_policy = "DenyAll"
 
   lifecycle {
@@ -27,6 +31,9 @@ resource "azurerm_managed_disk" "datadisk" {
   }
 }
 
+# ─────────────────────────────────────────────
+# Create Windows VMs
+# ─────────────────────────────────────────────
 resource "azurerm_windows_virtual_machine" "vmcode" {
   for_each = var.vmsetup
   name                = each.value.virtual_machine_name
@@ -50,6 +57,9 @@ resource "azurerm_windows_virtual_machine" "vmcode" {
   }
 }
 
+# ─────────────────────────────────────────────
+# Attach Existing Disk to VM
+# ─────────────────────────────────────────────
 resource "azurerm_virtual_machine_data_disk_attachment" "datadisk_attachment" {
   for_each            = var.vmsetup
   managed_disk_id     = azurerm_managed_disk.datadisk[each.key].id
