@@ -33,10 +33,10 @@ module "vmsetup" {
   vmsetup = var.vmsetup
    
 }
-module "publicip" {
-  for_each = var.Publicip
+module "Publicip" {
+  for_each = var.publicip
   depends_on = [ module.resource_group_name ]
-  source   = "./publicip"
+  source   = "./Publicip"
   publicip = var.publicip
   
 }
