@@ -31,6 +31,19 @@ module "vmsetup" {
   depends_on = [ module.nic ]
   source   = "./VM"
   vmsetup = var.vmsetup
+   
+}
+module "publicip" {
+  for_each = var.publicip
+  depends_on = [ module.resource_group_name ]
+  source   = "./publicip"
+  publicip = var.publicip
   
+}
+module "Subnet" {
+  for_each = var.subnetv
+  depends_on = [ module.VMVnet]
+  source   = "./subnet"
+  subnetv = var.subnetv
   
 }
