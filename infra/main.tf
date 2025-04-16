@@ -25,3 +25,12 @@ module "Vnet" {
     VMVnet = var.VMVnet
   
 }
+
+module "vmsetup" {
+  for_each = var.vmsetup
+  depends_on = [ module.nic ]
+  source   = "./VM"
+  vmsetup = var.vmsetup
+  
+  
+}
