@@ -16,7 +16,7 @@ env:
   WORKING_DIR: ${{ github.event.inputs.environment == 'dev' && './DevopsRG-Terraform/Dev/DevOpsRGCreation' || './infra' }}
   AZURE_CLIENT_ID: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_ID || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_CLIENT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_SUBSCRIPTION_ID || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_SUBSCRIPTION_ID }}
-  AZURE_CLIENT_SECRET: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_SECRET || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_CLIENT_SECRET }}
+  AZURE_CLIENT_SECRET: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_SECRET || github.event.inputs.environment == 'prod' && secrets.PROD_ARM_CLIENT_SECRET }}
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
 jobs:
