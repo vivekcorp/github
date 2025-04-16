@@ -15,7 +15,7 @@ data "azurerm_key_vault_secret" "keyvaultpass" {
 data "azurerm_key_vault" "keyvault" {
   for_each = var.vmsetup
   name                = each.value.keyval_name
-  resource_group_name = each.value.resource_group_name
+  resource_group_name = each.value.resource_group_namekv
 }
 
 data "azurerm_network_interface" "datanic" {
