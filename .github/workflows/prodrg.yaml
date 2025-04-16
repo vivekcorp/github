@@ -1,0 +1,63 @@
+name: 'Modified-rg-setup'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'Dev'
+        type: choice
+        options:
+          - dev
+          - prod
+
+env:
+  WORKING_DIR: ${{ github.event.inputs.environment == 'dev' && './DevopsRG-Terraform/Dev/DevOpsRGCreation' || './infra' }}
+  AZURE_CLIENT_ID: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_ID || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_CLIENT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_SUBSCRIPTION_ID || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_SUBSCRIPTION_ID }}
+  AZURE_CLIENT_SECRET: ${{ github.event.inputs.environment == 'dev' && secrets.NONPROD_AZURE_CLIENT_SECRET || github.event.inputs.environment == 'prod' && secrets.PROD_AZURE_CLIENT_SECRET }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+jobs:
+  deploy:
+    runs-on: uhg-runner
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Echo Working Directory
+        run: echo $WORKING_DIR
+
+      - name: Github Repo
+        run: git config --global url."https://oauth2:${GH_TOKEN}@github.com".insteadOf https://github.com
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.0
+
+      - name: Azure CLI Login
+        uses: azure/login@v1
+        with:
+          creds: '{"clientId":"${{ env.AZURE_CLIENT_ID }}","tenantId":"${{ env.AZURE_TENANT_ID }}","clientSecret":"${{ env.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ env.AZURE_SUBSCRIPTION_ID }}"}'
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Plan Terraform
+        run: terraform plan -out=tfplan -var-file=devops.tfvars
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: List Files After Plan
+        run: ls -1 $GITHUB_WORKSPACE/${{ env.WORKING_DIR }}
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.WORKING_DIR }}/tfplan
