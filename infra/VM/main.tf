@@ -15,7 +15,7 @@ resource "azurerm_managed_disk" "datadisk" {
   name                  = data.azurerm_managed_disk.existing_datadisk[each.key].name
   resource_group_name   = data.azurerm_managed_disk.existing_datadisk[each.key].resource_group_name
   location              = each.value.location  # Use location from the input variable
-  storage_account_type  = data.azurerm_managed_disk.existing_datadisk[each.key].sku  # Correct attribute for storage type
+  storage_account_type  = "Standard_LRS" # Correct attribute for storage type
   create_option         = "Empty"
   disk_size_gb          = data.azurerm_managed_disk.existing_datadisk[each.key].disk_size_gb
 
