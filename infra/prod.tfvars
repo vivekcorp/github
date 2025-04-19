@@ -77,7 +77,7 @@ VMVnet = {
   }
 loganylytics = {
 logg ={
-    logresource_group_name  = "transinfra"
+    resource_group_name  = "tumtumrg"
     location             = "westus"
     workspace_name       = "my-loganalytics"
     la_sku               = "PerGB2018"
