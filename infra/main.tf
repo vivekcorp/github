@@ -48,6 +48,7 @@ module "Subnet" {
   
 }
 module "logappworkspace" {
+depends_on = [ module.Vnet]
 for_each = var.loganylytics
 source   = "./logappworkspace"
  loganylytics = var.loganylytics 
