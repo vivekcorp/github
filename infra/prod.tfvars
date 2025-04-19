@@ -86,4 +86,5 @@ loganylytics = {
     application_type     = "web"
 
 }
+
 }
