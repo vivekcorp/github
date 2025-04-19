@@ -83,7 +83,7 @@ logg ={
     la_sku               = "PerGB2018"
     retention_in_days    = 30
     app_insights_name    = "my-appinsights"
-    application_type     = "web
+    application_type     = "web"
 
 }
 }
