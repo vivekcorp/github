@@ -47,3 +47,8 @@ module "Subnet" {
   subnetv = var.subnetv
   
 }
+module "logappworkspace" {
+for_each = var.loganylytics
+source   = "./logappworkspace"
+ loganylytics = var.loganylytics 
+}
