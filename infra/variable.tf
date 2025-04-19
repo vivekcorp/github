@@ -28,6 +28,8 @@ variable "vmsetup" {
 
 }
 
+variable "loganylytics" {}
+
 variable "VMVnet" {
   type = map(any)
 }
