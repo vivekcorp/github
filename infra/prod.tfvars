@@ -76,7 +76,7 @@ VMVnet = {
     }
   }
 loganylytics = {
-logg ={
+ logg = {
     resource_group_name  = "tumtumrg"
     location             = "westus"
     workspace_name       = "my-loganalytics"
