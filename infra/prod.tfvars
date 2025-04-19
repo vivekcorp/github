@@ -75,3 +75,11 @@ VMVnet = {
     address_space = ["10.0.0.0/16"]
     }
   }
+
+resource_group_name  = "transinfra"
+location             = "westus"
+workspace_name       = "my-loganalytics"
+la_sku               = "PerGB2018"
+retention_in_days    = 30
+app_insights_name    = "my-appinsights"
+application_type     = "web
