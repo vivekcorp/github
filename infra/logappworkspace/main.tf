@@ -11,7 +11,7 @@ resource "azurerm_application_insights" "app_insights" {
   for_each = var.loganylytics
   name                = each.value.app_insights_name
   location            = each.value.location
-  resource_group_name = data.azurerm_resource_group.datarg[each.key].resource_group_name
+  resource_group_name = data.azurerm_resource_group.datarg[each.key].name
   application_type    = each.value.application_type
   workspace_id        = azurerm_log_analytics_workspace.log_analytics[each.key].id
 }
